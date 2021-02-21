@@ -34,6 +34,21 @@ class AugmentGaussian:
     def add_validation_noise_np(self, x):
         return x + np.random.normal(size=x.shape)*(self.validation_stddev/255.0)
 
+class AugmentText:
+    def __init__(self, validation_stddev, train_stddev_rng_range):
+        self.validation_stddev = validation_stddev
+        self.train_stddev_range = train_stddev_rng_range
+
+    def add_train_noise_tf(self, x):
+        (minval,maxval) = self.train_stddev_range
+        shape = tf.shape(x)
+        rng_stddev = tf.random_uniform(shape=[1, 1, 1], minval=minval/255.0, maxval=maxval/255.0)
+        return x + tf.random_normal(shape) * rng_stddev
+
+    def add_validation_noise_np(self, x):
+        return x + np.random.normal(size=x.shape)*(self.validation_stddev/255.0)
+
+
 class AugmentPoisson:
     def __init__(self, lam_max):
         self.lam_max = lam_max
